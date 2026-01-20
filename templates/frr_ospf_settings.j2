@@ -1,8 +1,9 @@
-{% for r in hostvars[inventory_hostname]['frr_router_ospf_settings'] %}
-{% if r['instance_id'] is defined and r['instance_id'] != '' %}
+{% for r in lookup('ansible.builtin.vars', 'frr_router_ospf_settings') %}
+{% if r['instance_id'] is defined and r['instance_id']
+  not in ['', [], '[]', None] %}
 {{ 'router ospf ' ~ r['instance_id'] }}
-{% if r['router_id'] is defined and r['router_id'] |
-  ansible.utils.ipaddr('host') %}
+{% if (r['router_id'] is defined and r['router_id'] not in ['', [], '[]', None])
+  and ((r['router_id'] | ansible.utils.ipaddr('host')) is ansible.utils.ip()) %}
 {{ ' ospf router-id ' + r['router_id'] }}
 {% endif %}
 {% if r['log_adjacency_changes'] is defined and
@@ -17,81 +18,90 @@
 {{ ' distance ' ~ r['distance'] }}
 {% endif %}
 {% if r['default_information_originate'] is defined and
-  r['default_information_originate'] != '' %}
+  r['default_information_originate'] not in ['', [], '[]', None] %}
 {% for di in r['default_information_originate'] %}
-{% if di.enabled is defined and di.enabled == 'true' %}
+{% if di['enabled'] is defined and di['enabled'] == 'true' %}
 {{ ' default-information originate' -}}
-{% elif di.enabled is defined and di.enabled == 'always' %}
+{% elif di['enabled'] is defined and di['enabled'] == 'always' %}
 {{ ' default-information originate always' -}}
 {% endif %}
-{% if di.route_map is defined and di.route_map != '' %}
-{{ ' route-map ' + di.route_map -}}
+{% if di['route_map'] is defined and di['route_map']
+  not in ['', [], '[]', None] %}
+{{ ' route-map ' + di['route_map'] -}}
 {% endif %}
-{% if di.metric is defined and di.metric != '' %}
-{{ ' metric ' + di.metric -}}
+{% if di['metric'] is defined and di['metric'] not in ['', [], '[]', None] %}
+{{ ' metric ' + di['metric'] -}}
 {% endif %}
-{% if di.metric_type is defined and di.metric_type != '' %}
-{{ ' metric-type ' + di.metric_type -}}
+{% if di['metric_type'] is defined and di['metric_type']
+  not in ['', [], '[]', None] %}
+{{ ' metric-type ' + di['metric_type'] -}}
 {% endif %}
 {{ ' ' }}
 {% endfor %}
 {% endif %}
-{% if r['passive_interface'] is defined and r['passive_interface'] != '' %}
+{% if r['passive_interface'] is defined and r['passive_interface']
+  not in ['', [], '[]', None] %}
 {% for pi in r['passive_interface'] %}
 {{ ' passive-interface ' ~ pi }}
 {% endfor %}
 {% endif %}
-{% if r['area'] is defined and r['area'] != '' %}
+{% if r['area'] is defined and r['area'] not in ['', [], '[]', None] %}
 {% for a in r['area'] %}
-{% if a['area_id'] is defined and a['area_id'] != '' %}
-{% if a['filter_list_in'] is defined and a['filter_list_in'] != '' %}
+{% if a['area_id'] is defined and a['area_id'] not in ['', [], '[]', None] %}
+{% if a['filter_list_in'] is defined and a['filter_list_in']
+  not in ['', [], '[]', None] %}
 {{ ' area ' + a['area_id'] + ' filter-list prefix ' + a['filter_list_in'] +
   ' in' }}
 {% endif %}
-{% if a['filter_list_out'] is defined and a['filter_list_out'] != '' %}
+{% if a['filter_list_out'] is defined and a['filter_list_out']
+  not in ['', [], '[]', None] %}
 {{ ' area ' + a['area_id'] + ' filter-list prefix ' + a['filter_list_out'] +
   ' out' }}
 {% endif %}
-{% if a['import_list'] is defined and a['import_list'] != '' %}
+{% if a['import_list'] is defined and a['import_list']
+  not in ['', [], '[]', None] %}
 {{ ' area ' + a['area_id'] + ' import-list ' + a['import_list'] }}
 {% endif %}
-{% if a['export_list'] is defined and a['export_list'] != '' %}
+{% if a['export_list'] is defined and a['export_list']
+  not in ['', [], '[]', None] %}
 {{ ' area ' + a['area_id'] + ' export-list ' + a['export_list'] }}
 {% endif %}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if r['redistribute'] is defined and r['redistribute'] != '' %}
+{% if r['redistribute'] is defined and r['redistribute']
+  not in ['', [], '[]', None] %}
 {% for rr in r['redistribute'] %}
-{% if rr['connected'] is defined and rr['connected'] != '' %}
+{% if rr['connected'] is defined and rr['connected']
+  not in ['', [], '[]', None] %}
 {{ ' redistribute connected' -}}
 {% for r in rr['connected'] %}
 {% include 'frr_redistribute_generic.j2' %}
 {{ ' ' }}
 {% endfor %}
 {% endif %}
-{% if rr['static'] is defined and rr['static'] != '' %}
+{% if rr['static'] is defined and rr['static'] not in ['', [], '[]', None] %}
 {{ ' redistribute static' -}}
 {% for r in rr['static'] %}
 {% include 'frr_redistribute_generic.j2' %}
 {{ ' ' }}
 {% endfor %}
 {% endif %}
-{% if rr['bgp'] is defined and rr['bgp'] != '' %}
+{% if rr['bgp'] is defined and rr['bgp'] not in ['', [], '[]', None] %}
 {{ ' redistribute bgp' -}}
 {% for r in rr['bgp'] %}
 {% include 'frr_redistribute_generic.j2' %}
 {{ ' ' }}
 {% endfor %}
 {% endif %}
-{% if rr['kernel'] is defined and rr['kernel'] != '' %}
+{% if rr['kernel'] is defined and rr['kernel'] not in ['', [], '[]', None] %}
 {{ ' redistribute kernel' -}}
 {% for r in rr['kernel'] %}
 {% include 'frr_redistribute_generic.j2' %}
 {{ ' ' }}
 {% endfor %}
 {% endif %}
-{% if rr['ospf'] is defined and rr['ospf'] != '' %}
+{% if rr['ospf'] is defined and rr['ospf'] not in ['', [], '[]', None] %}
 {% for r in rr['ospf'] %}
 {{ ' redistribute ospf ' + r['instance_id'] -}}
 {% include 'frr_redistribute_generic.j2' %}

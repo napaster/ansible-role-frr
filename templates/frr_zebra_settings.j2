@@ -1,4 +1,4 @@
-{% if z['hostname'] is defined and z['hostname'] != '' %}
+{% if z['hostname'] is defined and z['hostname'] not in ['', [], '[]', None] %}
 {{ 'hostname ' ~ z['hostname'] }}
 {% endif %}
 {% if z['error_category'] is defined and z['error_category'] == 'false' %}
@@ -12,7 +12,7 @@
   'local6', 'local7', 'lpr', 'mail', 'news', 'syslog', 'user', 'uucp'] %}
 {{ 'log facility ' + z['log_facility'] }}
 {% endif %}
-{% if z['log_file'] is defined and z['log_file'] != '' %}
+{% if z['log_file'] is defined and z['log_file'] not in ['', [], '[]', None] %}
 {{ 'log file ' + z['log_file'] }}
 {% endif %}
 {% if z['log_record_priority'] is defined and
@@ -39,7 +39,7 @@
 {{ 'service integrated-vtysh-config' }}
 {% endif %}
 {% if z['zebra_on_rib_process_script'] is defined and
-  z['zebra_on_rib_process_script'] != '' %}
+  z['zebra_on_rib_process_script'] not in ['', [], '[]', None] %}
 {{ 'zebra on-rib-process script ' + z['zebra_on_rib_process_script'] }}
 {% endif %}
 {% if z['service_advanced_vty'] is defined and
@@ -50,9 +50,10 @@
   z['service_password_encryption'] == 'true' %}
 {{ 'service password-encryption' }}
 {% endif %}
-{% if z['password'] is defined and z['password'] != '' %}
+{% if z['password'] is defined and z['password'] not in ['', [], '[]', None] %}
 {{ 'password ' + z['password'] }}
 {% endif %}
-{% if z['enable_password'] is defined and z['enable_password'] != '' %}
+{% if z['enable_password'] is defined and z['enable_password']
+  not in ['', [], '[]', None] %}
 {{ 'enable password ' + z['enable_password'] }}
 {% endif %}

@@ -1,9 +1,9 @@
-{% for rm in vars['frr_router_route_maps'] %}
-{% if (rm['name'] is defined and rm['name'] != '') and
-  (rm['actions'] is defined and rm['actions'] != '') %}
+{% for rm in lookup('ansible.builtin.vars', 'frr_router_route_maps') %}
+{% if (rm['name'] is defined and rm['name'] not in ['', [], '[]', None]) and
+  (rm['actions'] is defined and rm['actions'] not in ['', [], '[]', None]) %}
 {% for rma in rm['actions'] %}
 {{ 'route-map ' + rm['name'] + ' ' + rma['action'] }}
-{% if rma['rules'] is defined and rma['rules'] != '' %}
+{% if rma['rules'] is defined and rma['rules'] not in ['', [], '[]', None] %}
 {% for r in rma['rules'] %}
 {{ ' ' + r }}
 {% endfor %}

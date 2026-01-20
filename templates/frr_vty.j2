@@ -1,9 +1,11 @@
-{% for l in vars['frr_vty_settings'] %}
+{% for l in lookup('ansible.builtin.vars', 'frr_vty_settings') %}
 {{ 'line vty' }}
-{% if l['access_class'] is defined and l['access_class'] != '' %}
+{% if l['access_class'] is defined and l['access_class']
+  not in ['', [], '[]', None] %}
 {{ ' access-class ' + l['access_class'] }}
 {% endif %}
-{% if l['ipv6_access_class'] is defined and l['ipv6_access_class'] != '' %}
+{% if l['ipv6_access_class'] is defined and l['ipv6_access_class']
+  not in ['', [], '[]', None] %}
 {{ ' ipv6 access-class ' + l['ipv6_access_class'] }}
 {% endif %}
 {% if loop['last'] %}

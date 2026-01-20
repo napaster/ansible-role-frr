@@ -3,9 +3,9 @@
 {{ '# Do not edit manually' }}
 
 {{ '!' }}
-{% if vars['frr_zebra_settings'] is defined and
-  vars['frr_zebra_settings'] != [] %}
-{% for z in vars['frr_zebra_settings'] %}
+{% if lookup('ansible.builtin.vars', 'frr_zebra_settings', default='')
+  not in ['', [], '[]', None] %}
+{% for z in lookup('ansible.builtin.vars', 'frr_zebra_settings') %}
 {% include 'frr_zebra_settings.j2' %}
 {% include 'frr_zebra_debug_settings.j2' %}
 {% if loop['last'] %}
@@ -13,46 +13,51 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if vars['frr_routes'] is defined and vars['frr_routes'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_routes', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_routes.j2' %}
 {% endif %}
-{% if vars['frr_interfaces'] is defined and vars['frr_interfaces'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_interfaces', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_interfaces.j2' %}
 {% endif %}
-{% if vars['frr_pbr_maps'] is defined and vars['frr_pbr_maps'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_pbr_maps', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_pbr_map.j2' %}
 {% endif %}
-{% if vars['frr_nexthop_groups'] is defined and
-  vars['frr_nexthop_groups'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_nexthop_groups', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_nexthop_group.j2' %}
 {% endif %}
-{% if vars['frr_vrrp'] is defined and vars['frr_vrrp'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_vrrp', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_vrrp.j2' %}
 {% endif %}
-{% if vars['frr_router_ospf_settings'] is defined and
-  vars['frr_router_ospf_settings'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_router_ospf_settings', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_ospf_settings.j2' %}
 {% endif %}
-{% if vars['frr_router_bgp_settings'] is defined and
-  vars['frr_router_bgp_settings'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_router_bgp_settings', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_bgp_settings.j2' %}
 {% endif %}
-{% if vars['frr_router_access_lists'] is defined and
-  vars['frr_router_access_lists'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_router_access_lists', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_access_lists.j2' %}
 {% endif %}
-{% if vars['frr_router_prefix_lists'] is defined and
-  vars['frr_router_prefix_lists'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_router_prefix_lists', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_prefix_list.j2' %}
 {% endif %}
-{% if vars['frr_router_bgp_access_lists'] is defined and
-  vars['frr_router_bgp_access_lists'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_router_bgp_access_lists', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_bgp_access_lists.j2' %}
 {% endif %}
-{% if vars['frr_router_route_maps'] is defined and
-  vars['frr_router_route_maps'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_router_route_maps', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_route_map.j2' %}
 {% endif %}
-{% if vars['frr_vty_settings'] is defined and vars['frr_vty_settings'] != [] %}
+{% if lookup('ansible.builtin.vars', 'frr_vty_settings', default='')
+  not in ['', [], '[]', None] %}
 {% include 'frr_vty.j2' %}
 {% endif %}

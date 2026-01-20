@@ -1,25 +1,28 @@
-{% for r in hostvars[inventory_hostname]['frr_router_bgp_settings'] %}
-{% if r['as_num'] is defined and r['as_num'] != '' %}
+{% for r in lookup('ansible.builtin.vars', 'frr_router_bgp_settings') %}
+{% if r['as_num'] is defined and r['as_num'] not in ['', [], '[]', None] %}
 {{ 'router bgp ' ~ r['as_num'] }}
-{% if r['router_id'] is defined and r['router_id'] |
-  ansible.utils.ipaddr('host') %}
+{% if (r['router_id'] is defined and r['router_id']
+  not in ['', [], '[]', None]) and ((r['router_id'] |
+  ansible.utils.ipaddr('host')) is ansible.utils.ip()) %}
 {{ ' bgp router-id ' + r['router_id'] }}
 {% endif %}
 {% if r['bgp_graceful_restart'] is defined and
   r['bgp_graceful_restart'] == 'true' %}
 {{ ' bgp graceful-restart' }}
 {% endif %}
-{% if r['neighbors'] is defined and r['neighbors'] != '' %}
+{% if r['neighbors'] is defined and r['neighbors']
+  not in ['', [], '[]', None] %}
 {% for n in r['neighbors'] %}
-{% if n['neighbor'] is defined and n['neighbor'] |
-  ansible.utils.ipaddr('host') %}
+{% if (n['neighbor'] is defined and n['neighbor']
+  not in ['', [], '[]', None]) and ((n['neighbor'] |
+  ansible.utils.ipaddr('host')) is ansible.utils.ip()) %}
 {% include 'frr_bgp_neighbor.j2' %}
 {% endif %}
 {% endfor %}
 {% endif %}
 {% endif %}
 {% if r['address_family_ipv4_unicast'] is defined and
-  r['address_family_ipv4_unicast'] != '' %}
+  r['address_family_ipv4_unicast'] not in ['', [], '[]', None] %}
 {% for ipv4u in r['address_family_ipv4_unicast'] %}
 {% include 'frr_bgp_address_family_ipv4_unicast.j2' %}
 {% endfor %}

@@ -1,12 +1,14 @@
-{% for nhg in vars['frr_nexthop_groups'] %}
-{% if (nhg['name'] is defined and nhg['name'] != '') and
-  (nhg['rules'] is defined and nhg['rules'] != '') %}
+{% for nhg in lookup('ansible.builtin.vars', 'frr_nexthop_groups') %}
+{% if (nhg['name'] is defined and nhg['name'] not in ['', [], '[]', None]) and
+  (nhg['rules'] is defined and nhg['rules'] not in ['', [], '[]', None]) %}
 {{ 'nexthop-group ' ~ nhg['name'] }}
 {% for nhgr in nhg['rules'] %}
-{% if nhgr['next_hop'] is defined and nhgr['next_hop'] != '' %}
+{% if nhgr['next_hop'] is defined and nhgr['next_hop']
+  not in ['', [], '[]', None] %}
 {{ ' nexthop ' ~ nhgr['next_hop'] -}}
 {% endif %}
-{% if nhgr['interface'] is defined and nhgr['interface'] != '' %}
+{% if nhgr['interface'] is defined and nhgr['interface']
+  not in ['', [], '[]', None] %}
 {{ ' ' ~ nhgr['interface'] -}}
 {% endif %}
 {% if nhgr['weight'] is defined and (nhgr['weight'] | int() > 1 and

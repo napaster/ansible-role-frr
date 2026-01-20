@@ -1,56 +1,64 @@
 {{ ' !' }}
 {{ ' address-family ipv4 unicast' }}
-{% if ipv4u['networks'] is defined and ipv4u['networks'] != '' %}
+{% if ipv4u['networks'] is defined and ipv4u['networks']
+  not in ['', [], '[]', None] %}
 {% for net in ipv4u['networks'] %}
-{% if net is defined and net | ansible.utils.ipaddr('net') %}
+{% if (net is defined and net not in ['', [], '[]', None]) and
+  ((net | ansible.utils.ipaddr('net')) is ansible.utils.ip()) %}
 {{ '  network ' + net }}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if ipv4u['neighbors'] is defined and ipv4u['neighbors'] != '' %}
+{% if ipv4u['neighbors'] is defined and ipv4u['neighbors']
+  not in ['', [], '[]', None] %}
 {% for nipv4 in ipv4u['neighbors'] %}
-{% if nipv4['neighbor'] is defined and nipv4['neighbor'] |
-  ansible.utils.ipaddr('host') %}
+{% if (nipv4['neighbor'] is defined and nipv4['neighbor']
+  not in ['', [], '[]', None]) and ((nipv4['neighbor'] |
+  ansible.utils.ipaddr('host')) is ansible.utils.ip()) %}
 {% if nipv4['soft_reconfiguration_inbound'] is defined and
  nipv4['soft_reconfiguration_inbound'] == 'true' %}
 {{ '  neighbor ' ~ nipv4['neighbor'] ~ ' soft-reconfiguration inbound' }}
 {% endif %}
-{% if nipv4['distribute_list'] is defined and nipv4['distribute_list'] != '' %}
+{% if nipv4['distribute_list'] is defined and nipv4['distribute_list']
+  not in ['', [], '[]', None] %}
 {% for nd in nipv4['distribute_list'] %}
-{% if nd.in is defined and nd.in != '' %}
+{% if nd.in is defined and nd.in not in ['', [], '[]', None] %}
 {{ '  neighbor ' ~ nipv4['neighbor'] ~ ' distribute-list ' ~ nd.in ~ ' in' }}
 {% endif %}
-{% if nd.out is defined and nd.out != '' %}
+{% if nd.out is defined and nd.out not in ['', [], '[]', None] %}
 {{ '  neighbor ' ~ nipv4['neighbor'] ~ ' distribute-list ' ~ nd.out ~ ' out' }}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if nipv4['filter_list'] is defined and nipv4['filter_list'] != '' %}
+{% if nipv4['filter_list'] is defined and nipv4['filter_list']
+  not in ['', [], '[]', None] %}
 {% for nf in nipv4['filter_list'] %}
-{% if nf.in is defined and nf.in != '' %}
+{% if nf.in is defined and nf.in not in ['', [], '[]', None] %}
 {{ '  neighbor ' ~ nipv4['neighbor'] ~ ' filter-list ' ~ nf.in ~ ' in' }}
 {% endif %}
-{% if nf.out is defined and nf.out != '' %}
+{% if nf.out is defined and nf.out not in ['', [], '[]', None] %}
 {{ '  neighbor ' ~ nipv4['neighbor'] ~ ' filter-list ' ~ nf.out ~ ' out' }}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if nipv4['prefix_list'] is defined and nipv4['prefix_list'] != '' %}
+{% if nipv4['prefix_list'] is defined and nipv4['prefix_list']
+  not in ['', [], '[]', None] %}
 {% for np in nipv4['prefix_list'] %}
-{% if np['in'] is defined and np['in'] != '' %}
+{% if np['in'] is defined and np['in'] not in ['', [], '[]', None] %}
 {{ '  neighbor ' ~ nipv4['neighbor'] ~ ' prefix-list ' ~ np['in'] ~ ' in' }}
 {% endif %}
-{% if np['out'] is defined and np['out'] != '' %}
+{% if np['out'] is defined and np['out'] not in ['', [], '[]', None] %}
 {{ '  neighbor ' ~ nipv4['neighbor'] ~ ' prefix-list ' ~ np['out'] ~ ' out' }}
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if nipv4['route_map'] is defined and nipv4['route_map'] != '' %}
+{% if nipv4['route_map'] is defined and nipv4['route_map']
+  not in ['', [], '[]', None] %}
 {% for nr in nipv4['route_map'] %}
-{% if nr['in'] is defined and nr['in'] != '' %}
+{% if nr['in'] is defined and nr['in'] not in ['', [], '[]', None] %}
 {{ '  neighbor ' ~ nipv4['neighbor'] ~ ' route-map ' ~ nr['in'] ~ ' in' }}
 {% endif %}
-{% if nr['out'] is defined and nr['out'] != '' %}
+{% if nr['out'] is defined and nr['out'] not in ['', [], '[]', None] %}
 {{ '  neighbor ' ~ nipv4['neighbor'] ~ ' route-map ' ~ nr['out'] ~ ' out' }}
 {% endif %}
 {% endfor %}

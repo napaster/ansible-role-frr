@@ -1,13 +1,15 @@
-{% for pm in vars['frr_pbr_maps'] %}
-{% if (pm['name'] is defined and pm['name'] != '') and
-  (pm['rules'] is defined and pm['rules'] != '') %}
+{% for pm in lookup('ansible.builtin.vars', 'frr_pbr_maps') %}
+{% if (pm['name'] is defined and pm['name'] not in ['', [], '[]', None]) and
+  (pm['rules'] is defined and pm['rules'] not in ['', [], '[]', None]) %}
 {% for pmr in pm['rules'] %}
 {{ 'pbr-map ' ~ pm['name'] ~ ' seq ' ~ (loop['index'] * 5) }}
-{% if pmr['matchers'] is defined and pmr['matchers'] != '' %}
+{% if pmr['matchers'] is defined and pmr['matchers']
+  not in ['', [], '[]', None] %}
 {% for m in pmr['matchers'] %}
 {{ ' match ' + m['type'] + ' ' ~ m['value'] }}
 {% endfor %}
-{% if pmr['actions'] is defined and pmr['actions'] != '' %}
+{% if pmr['actions'] is defined and pmr['actions']
+  not in ['', [], '[]', None] %}
 {% for a in pmr['actions'] %}
 {{ ' set ' + a['type'] + ' ' ~ a['value'] }}
 {% endfor %}

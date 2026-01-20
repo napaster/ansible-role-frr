@@ -1,9 +1,10 @@
-{% for p in vars['frr_router_prefix_lists'] %}
-{% if p['name'] is defined and p['name'] != '' %}
-{% if p['description'] is defined and p['description'] != '' %}
+{% for p in lookup('ansible.builtin.vars', 'frr_router_prefix_lists') %}
+{% if p['name'] is defined and p['name'] not in ['', [], '[]', None] %}
+{% if p['description'] is defined and p['description']
+  not in ['', [], '[]', None] %}
 {{ 'ip prefix-list ' + p['name'] + ' description ' + p['description'] }}
 {% endif %}
-{% if p['rules'] is defined and p['rules'] != '' %}
+{% if p['rules'] is defined and p['rules'] not in ['', [], '[]', None] %}
 {% for list in p['rules'] %}
 {{ 'ip prefix-list ' ~ p['name'] ~ ' seq ' ~ (loop['index'] * 5) ~ ' ' ~ list }}
 {% endfor %}

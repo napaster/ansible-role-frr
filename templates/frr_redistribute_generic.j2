@@ -1,9 +1,11 @@
-{% if r['route_map'] is defined and r['route_map'] != '' %}
+{% if r['route_map'] is defined and r['route_map']
+  not in ['', [], '[]', None] %}
 {{ ' route-map ' ~ r['route_map'] -}}
 {% endif %}
-{% if r['metric'] is defined and r['metric'] != '' %}
+{% if r['metric'] is defined and r['metric'] not in ['', [], '[]', None] %}
 {{ ' metric ' ~ r['metric'] -}}
 {% endif %}
-{% if r['metric_type'] is defined and r['metric_type'] != '' %}
+{% if r['metric_type'] is defined and r['metric_type']
+  not in ['', [], '[]', None] %}
 {{ ' metric-type ' ~ r['metric_type'] -}}
 {% endif %}

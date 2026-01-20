@@ -1,4 +1,5 @@
-{% if n['remote_as'] is defined and n['remote_as'] != '' %}
+{% if n['remote_as'] is defined and n['remote_as']
+  not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' remote-as ' ~ n['remote_as'] }}
 {% endif %}
 {% if n['advertisement_interval'] is defined and
@@ -11,14 +12,16 @@
   n['bfd_check_control_plane_failure'] == 'true' %}
 {{ ' neighbor ' + n['neighbor'] + ' bfd check-control-plane-failure' }}
 {% endif %}
-{% if n['bfd_profile'] is defined and n['bfd_profile'] != '' %}
+{% if n['bfd_profile'] is defined and n['bfd_profile']
+  not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' bfd profile ' ~ n['bfd_profile'] }}
 {% endif %}
 {% if n['capability'] is defined and
   n['capability'] in ['dynamic', 'extended-nexthop'] %}
 {{ ' neighbor ' + n['neighbor'] + ' capability ' + n['capability'] }}
 {% endif %}
-{% if n['description'] is defined and n['description'] != '' %}
+{% if n['description'] is defined and n['description']
+  not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' description ' ~ n['description'] }}
 {% endif %}
 {% if n['disable_connected_check'] is defined and
@@ -46,10 +49,12 @@
   n['graceful_restart_helper'] == 'true' %}
 {{ ' neighbor ' + n['neighbor'] + ' graceful-restart-helper' }}
 {% endif %}
-{% if n['interface'] is defined and n['interface'] != '' %}
+{% if n['interface'] is defined and n['interface']
+  not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' interface ' ~ n['interface'] }}
 {% endif %}
-{% if n['maximum_prefix_out'] is defined and n['maximum_prefix_out'] != '' %}
+{% if n['maximum_prefix_out'] is defined and
+  n['maximum_prefix_out'] not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' maximum-prefix-out ' ~
   n['maximum_prefix_out'] }}
 {% endif %}
@@ -60,13 +65,15 @@
 {% if n['passive'] is defined and n['passive'] == 'true' %}
 {{ ' neighbor ' + n['neighbor'] + ' passive' }}
 {% endif %}
-{% if n['password'] is defined and n['password'] != '' %}
+{% if n['password'] is defined and n['password']
+  not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' password ' ~ n['password'] }}
 {% endif %}
-{% if n['peer_group'] is defined and n['peer_group'] != '' %}
+{% if n['peer_group'] is defined and n['peer_group']
+  not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' peer-group ' ~ n['peer_group'] }}
 {% endif %}
-{% if n['port'] is defined and n['port'] != '' %}
+{% if n['port'] is defined and n['port'] not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' port ' ~ n['port'] }}
 {% endif %}
 {% if n['sender_as_path_loop_detection'] is defined and
@@ -78,6 +85,20 @@
 {% endif %}
 {% if n['solo'] is defined and n['solo'] == 'true' %}
 {{ ' neighbor ' + n['neighbor'] + ' solo ' }}
+{% endif %}
+{% if n['local_role'] is defined and n['local_role']
+  not in ['', [], '[]', None] %}
+{% for nl in n['local_role'] %}
+{% if nl['role'] is defined and nl['role'] in ['provider', 'rs-server',
+  'rs-client', 'customer', 'peer'] %}
+{% if nl['strict'] is defined and nl['strict'] == 'true' %}
+{{ ' neighbor ' + n['neighbor'] + ' local-role ' + nl['role'] +
+  ' strict-mode' }}
+{% else %}
+{{ ' neighbor ' + n['neighbor'] + ' local-role ' + nl['role'] }}
+{% endif %}
+{% endif %}
+{% endfor %}
 {% endif %}
 {% if n['strict_capability_match'] is defined and
   n['strict_capability_match'] == 'true' %}

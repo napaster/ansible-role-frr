@@ -7,11 +7,10 @@
     file: "packages.yml"
   when:
     - "hostvars[inventory_hostname]['frr'] is defined"
-    - "hostvars[inventory_hostname]['frr'] != ''"
+    - "hostvars[inventory_hostname]['frr'] not in ['', [], '[]', None]"
     - "hostvars[inventory_hostname]['frr'] |
-       community.general.json_query(vars['frr_install_package']) is defined"
-    - "hostvars[inventory_hostname]['frr'] |
-       community.general.json_query(vars['frr_install_package']) == 'true'"
+       community.general.json_query(lookup('ansible.builtin.vars',
+      'frr_install_package', default='')) == 'true'"
   vars:
     frr_install_package: "[] | map(&install_package || 'false', @) | [0]"
 - name: "frr | Include deployment tasks"

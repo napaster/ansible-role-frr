@@ -1,9 +1,9 @@
-{% for v in vars['frr_vrrp'] %}
+{% for v in lookup('ansible.builtin.vars', 'frr_vrrp') %}
 {% if v['vrrp_autoconfigure_version'] is defined and
   v['vrrp_autoconfigure_version'] == '2' %}
 {{ 'vrrp autoconfigure version ' ~ v['vrrp_autoconfigure_version'] }}
 {% endif %}
-{% if v['default'] is defined and v['default'] != [] %}
+{% if v['default'] is defined and v['default'] not in ['', [], '[]', None] %}
 {% for vd in v['default'] %}
 {% if vd['priority'] is defined and (vd['priority'] | int() >= 1 and
   vd['priority'] | int() <= 254) %}

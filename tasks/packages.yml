@@ -1,7 +1,7 @@
 ---
 - name: "frr | Install the required packages in Redhat derivatives"
   when:
-    - "hostvars[inventory_hostname]['ansible_os_family'] == 'RedHat'"
+    - "hostvars[inventory_hostname]['ansible_facts']['os_family'] == 'RedHat'"
   block:
     - name: "frr | Update dnf cache"
       ansible.builtin.dnf:
@@ -9,10 +9,10 @@
     - name: "frr | Install package with dnf"
       ansible.builtin.dnf:
         name: "{{ hostvars[inventory_hostname]['frr_package'] }}"
-        state: "{{ vars['frr_package_state'] | default(omit) }}"
+        state: "{{ lookup('ansible.builtin.vars', 'frr_package_state') }}"
 - name: "frr | Install the required packages in Debian derivatives"
   when:
-    - "hostvars[inventory_hostname]['ansible_os_family'] == 'Debian'"
+    - "hostvars[inventory_hostname]['ansible_facts']['os_family'] == 'Debian'"
   block:
     - name: "frr | Update apt cache"
       ansible.builtin.apt:
@@ -20,10 +20,11 @@
     - name: "frr | Install package with apt"
       ansible.builtin.apt:
         name: "{{ hostvars[inventory_hostname]['frr_package'] }}"
-        state: "{{ vars['frr_package_state'] | default(omit) }}"
+        state: "{{ lookup('ansible.builtin.vars', 'frr_package_state') }}"
 - name: "frr | Install the required packages in ArchLinux derivatives"
   when:
-    - "hostvars[inventory_hostname]['ansible_os_family'] == 'Archlinux'"
+    - "hostvars[inventory_hostname]['ansible_facts']['os_family'] ==
+      'Archlinux'"
   block:
     - name: "frr | Update pacman cache"
       community.general.pacman:
@@ -31,4 +32,4 @@
     - name: "frr | Install package with pacman"
       community.general.pacman:
         name: "{{ hostvars[inventory_hostname]['frr_package'] }}"
-        state: "{{ vars['frr_package_state'] | default(omit) }}"
+        state: "{{ lookup('ansible.builtin.vars', 'frr_package_state') }}"

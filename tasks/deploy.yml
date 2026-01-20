@@ -12,26 +12,24 @@
   ansible.builtin.template:
     src: "frr_script.j2"
     dest: "{{ hostvars[inventory_hostname]['frr_conf_dest'] + '/scripts/' +
-      script['name'] + '.lua' }}"
+      frr_script['name'] + '.lua' }}"
     owner: "{{ hostvars[inventory_hostname]['frr_user'] }}"
     group: "{{ hostvars[inventory_hostname]['frr_group'] }}"
     mode: "0640"
-  loop: "{{ vars['frr_scripts_list'] | flatten(levels=1) }}"
+  loop: "{{ lookup('ansible.builtin.vars', 'frr_scripts_list') |
+    flatten(levels=1) }}"
   loop_control:
-    loop_var: "script"
+    loop_var: "frr_script"
     label: "{{ 'Deploy script: ' +
       hostvars[inventory_hostname]['frr_conf_dest'] + '/scripts/' +
-      script['name'] + '.lua' }}"
+      frr_script['name'] + '.lua' }}"
   when:
-    - "vars['frr_scripts_list'] is defined"
-    - "vars['frr_scripts_list'] != ''"
-    - "vars['frr_scripts_list'] != None"
+    - "lookup('ansible.builtin.vars', 'frr_scripts_list',
+      default='') not in ['', [], '[]', None]"
     - "script['name'] is defined"
-    - "script['name'] != ''"
-    - "script['name'] != None"
+    - "script['name'] not in ['', [], '[]', None]"
     - "script['data'] is defined"
-    - "script['data'] != ''"
-    - "script['data'] != None"
+    - "script['data'] not in ['', [], '[]', None]"
   notify:
     - "Restart frr"
 - name: "frr | Deploy frr configuration"
@@ -50,10 +48,9 @@
     enabled: "yes"
   when:
     - "hostvars[inventory_hostname]['frr'] is defined"
-    - "hostvars[inventory_hostname]['frr'] != ''"
+    - "hostvars[inventory_hostname]['frr'] not in ['', [], '[]', None]"
     - "hostvars[inventory_hostname]['frr'] |
-       community.general.json_query(vars['frr_enable']) is defined"
-    - "hostvars[inventory_hostname]['frr'] |
-       community.general.json_query(vars['frr_enable']) == 'true'"
+       community.general.json_query(lookup('ansible.builtin.vars',
+      'frr_enable', default='')) == 'true'"
   vars:
     frr_enable: "[] | map(&enable || 'false', @) | [0]"

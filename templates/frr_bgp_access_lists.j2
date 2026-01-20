@@ -1,6 +1,6 @@
-{% for b in vars['frr_router_bgp_access_lists'] %}
-{% if b['name'] is defined and b['name'] != '' %}
-{% if b['rules'] is defined and b['rules'] != '' %}
+{% for b in lookup('ansible.builtin.vars', 'frr_router_bgp_access_lists') %}
+{% if b['name'] is defined and b['name'] not in ['', [], '[]', None] %}
+{% if b['rules'] is defined and b['rules'] not in ['', [], '[]', None] %}
 {% for acl in b['rules'] %}
 {{ 'bgp as-path access-list ' + b['name'] + ' ' + acl }}
 {% endfor %}

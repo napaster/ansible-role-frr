@@ -1,7 +1,14 @@
 ---
+- name: "frr | Assert that ansible facts gathered successfully"
+  ansible.builtin.assert:
+    that:
+      - "hostvars[inventory_hostname]['ansible_facts']['os_family'] is defined"
+    fail_msg: "'ansible_facts' not found. Please enable facts gathering"
+    quiet: "true"
 - name: "frr | Add the OS specific varibles"
   ansible.builtin.include_vars:
-    file: "{{ hostvars[inventory_hostname]['ansible_os_family'] + '.yml' }}"
+    file: "{{ hostvars[inventory_hostname]['ansible_facts']['os_family'] +
+      '.yml' }}"
 - name: "frr | Set facts about frr role"
   ansible.builtin.set_fact:
     frr_package_state: "{{ hostvars[inventory_hostname]['frr'] |
@@ -40,23 +47,26 @@
       community.general.json_query('[].settings[].router[].access_list[]') }}"
     frr_router_prefix_lists: "{{ hostvars[inventory_hostname]['frr'] |
       community.general.json_query('[].settings[].router[].prefix_list[]') }}"
+  when:
+    - "hostvars[inventory_hostname]['frr'] is defined"
+    - "hostvars[inventory_hostname]['frr'] not in ['', [], '[]', None]"
 - name: "frr | Assert that frr package state in valid value"
   ansible.builtin.assert:
     that:
-      - "vars['frr_package_state'] in ['present', 'latest']"
-    fail_msg: "'package_state' must be in 'present' or 'latest'"
+      - "lookup('ansible.builtin.vars', 'frr_package_state') in
+        ['present', 'latest']"
+    fail_msg: "{{ 'package_state must be in `present` or `latest`,
+      current is: ' + lookup('ansible.builtin.vars', 'frr_package_state') }}"
     quiet: "true"
   when:
-    - "vars['frr_package_state'] is defined"
-    - "vars['frr_package_state'] != []"
-    - "vars['frr_package_state'] != ''"
-    - "vars['frr_package_state'] != None"
-- name: "frr | Set frr package state to present state from empty state"
+    - "lookup('ansible.builtin.vars', 'frr_package_state',
+      default='') not in ['', [], '[]', None, 'present', 'latest']"
+- name: "frr | Set package state to 'present' cause value is not defined"
   ansible.builtin.set_fact:
-    frr_package_state: 'present'
+    frr_package_state: "present"
   when:
-    - "vars['frr_package_state'] is defined"
-    - "(vars['frr_package_state'] == '' or vars['frr_package_state'] == None)"
+    - "lookup('ansible.builtin.vars', 'frr_package_state',
+      default='') in ['', [], '[]', None]"
 - name: "frr | Create catalog for frr configuration"
   ansible.builtin.file:
     path: "{{ hostvars[inventory_hostname]['frr_conf_dest'] + '/scripts' }}"
