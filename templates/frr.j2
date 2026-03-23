@@ -29,6 +29,10 @@
   not in ['', [], '[]', None] %}
 {% include 'frr_nexthop_group.j2' %}
 {% endif %}
+{% if lookup('ansible.builtin.vars', 'frr_bfd', default='')
+  not in ['', [], '[]', None] %}
+{% include 'frr_bfd.j2' %}
+{% endif %}
 {% if lookup('ansible.builtin.vars', 'frr_vrrp', default='')
   not in ['', [], '[]', None] %}
 {% include 'frr_vrrp.j2' %}

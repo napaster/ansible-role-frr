@@ -27,6 +27,8 @@
       community.general.json_query('[].settings[].vty[]') }}"
     frr_routes: "{{ hostvars[inventory_hostname]['frr'] |
       community.general.json_query('[].settings[].routes[]') }}"
+    frr_bfd: "{{ hostvars[inventory_hostname]['frr'] |
+      community.general.json_query('[].settings[].bfd[]') }}"
     frr_vrrp: "{{ hostvars[inventory_hostname]['frr'] |
       community.general.json_query('[].settings[].vrrp[]') }}"
     frr_interfaces: "{{ hostvars[inventory_hostname]['frr'] |

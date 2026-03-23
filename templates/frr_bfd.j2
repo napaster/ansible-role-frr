@@ -1,0 +1,50 @@
+{% for b in lookup('ansible.builtin.vars', 'frr_bfd') %}
+{% if loop['first'] %}
+{{ 'bfd' }}
+{% endif %}
+{% if b['profiles'] is defined and b['profiles'] not in ['', [], '[]', None] %}
+{% for bp in b['profiles'] %}
+{% if bp['name'] is defined and bp['name'] not in ['', [], '[]', None] %}
+{{ ' profile ' + bp['name'] }}
+{% include 'frr_bfd_settings.j2' %}
+{% endif %}
+{{ ' exit' }}
+{{ ' !' }}
+{% endfor %}
+{% endif %}
+{% if b['peers'] is defined and b['peers'] not in ['', [], '[]', None] %}
+{% for bp in b['peers'] %}
+{% if bp['peer'] is defined and (bp['peer'] not in ['', [], '[]', None] and
+  bp['peer'] is ansible.utils.ip()) %}
+{{ ' peer ' + bp['peer'] -}}
+{% if bp['vrf'] is defined and bp['vrf'] not in ['', [], '[]', None] %}
+{{ ' vrf ' + bp['vrf'] -}}
+{% endif %}
+{% if bp['interface'] is defined and bp['interface']
+  not in ['', [], '[]', None] %}
+{{ ' interface ' + bp['interface'] -}}
+{% endif %}
+{% if bp['local_address'] is defined and
+  (bp['local_address'] not in ['', [], '[]', None] and
+  bp['local_address'] is ansible.utils.ip()) %}
+{{ ' local-address ' + (bp['local_address'] |
+  ansible.utils.ipaddr('address')) -}}
+{% endif %}
+{% if bp['multihop'] is defined and bp['multihop'] == 'true' %}
+{{ ' multihop' -}}
+{% endif %}
+{{ '' }}
+{% if bp['profile'] is defined and bp['profile'] not in ['', [], '[]', None] %}
+{{ '  profile ' + bp['profile'] }}
+{% endif %}
+{% include 'frr_bfd_settings.j2' %}
+{% endif %}
+{{ ' exit' }}
+{{ ' !' }}
+{% endfor %}
+{% endif %}
+{% if loop['last'] %}
+{{ 'exit' }}
+{{ '!' }}
+{% endif %}
+{% endfor %}

@@ -10,6 +10,15 @@
   r['bgp_graceful_restart'] == 'true' %}
 {{ ' bgp graceful-restart' }}
 {% endif %}
+{% if r['peer_groups'] is defined and r['peer_groups']
+  not in ['', [], '[]', None] %}
+{% for n in r['peer_groups'] %}
+{% if (n['neighbor'] is defined and n['neighbor']
+  not in ['', [], '[]', None]) %}
+{% include 'frr_bgp_peer_group.j2' %}
+{% endif %}
+{% endfor %}
+{% endif %}
 {% if r['neighbors'] is defined and r['neighbors']
   not in ['', [], '[]', None] %}
 {% for n in r['neighbors'] %}

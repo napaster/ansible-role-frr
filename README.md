@@ -215,6 +215,37 @@ frr:
           - destination: '10.0.0.1/32'
             next_hop: 'reject'
             tag: '222'
+        bfd:
+          - profiles:
+              - name: 'BFD_PROFILE1'
+                echo:
+                  - interval: '500'
+                    receive_interval: '500'
+                    transmit_interval: '500'
+                passive: 'true'
+              - name: 'BFD_PROFILE2'
+                minimum_ttl: '100'
+                detect_multiplier: '10'
+                receive_interval: '100'
+                transmit_interval: '100'
+            peers:
+              - peer: '10.31.2.250'
+                vrf: 'green'
+                local_address: '10.31.2.1'
+                multihop: 'true'
+                profile: 'BFD_PROFILE1'
+              - peer: '10.31.2.251'
+                local_address: '10.31.2.1'
+                multihop: 'true'
+                receive_interval: '110'
+                transmit_interval: '110'
+                minimum_ttl: '110'
+                detect_multiplier: '12'
+              - peer: '10.31.2.252'
+                interface: 'vlan28'
+                receive_interval: '130'
+                transmit_interval: '130'
+                minimum_ttl: '130'
         vrrp:
           - vrrp_autoconfigure_version: '3'
             default:

@@ -1,0 +1,44 @@
+{% if bp['echo'] is defined and bp['echo'] not in ['', [], '[]', None] %}
+{% for bpe in bp['echo'] %}
+{% if loop['first']%}
+{{ '  echo-mode' }}
+{% endif %}
+{% if bpe['interval'] is defined and (bpe['interval'] | int() >= 10 and
+  bpe['interval'] | int() <= 60000) %}
+{{ '  echo-interval ' ~ bpe['interval'] }}
+{% endif %}
+{% if bpe['receive_interval'] is defined and
+  (bpe['receive_interval'] | int() >= 10 and
+  bpe['receive_interval'] | int() <= 60000) %}
+{{ '  echo receive-interval ' ~ bpe['receive_interval'] }}
+{% endif %}
+{% if bpe['transmit_interval'] is defined and
+  (bpe['transmit_interval'] | int() >= 10 and
+  bpe['transmit_interval'] | int() <= 60000) %}
+{{ '  echo transmit-interval ' ~ bpe['transmit_interval'] }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% if bp['passive'] is defined and bp['passive'] == 'true' %}
+{{ '  passive-mode' }}
+{% endif %}
+{% if bp['minimum_ttl'] is defined and (bp['minimum_ttl'] | int() >= 1 and
+  bp['minimum_ttl'] | int() <= 254) %}
+{{ '  minimum-ttl ' ~ bp['minimum_ttl'] }}
+{% endif %}
+{% if bp['detect_multiplier'] is defined and
+  (bp['detect_multiplier'] | int() >= 2 and
+  bp['detect_multiplier'] | int() <= 255) %}
+{{ '  detect-multiplier ' ~ bp['detect_multiplier'] }}
+{% endif %}
+{% if bp['receive_interval'] is defined and
+  (bp['receive_interval'] | int() >= 10 and
+  bp['receive_interval'] | int() <= 60000) %}
+{{ '  receive-interval ' ~ bp['receive_interval'] }}
+{% endif %}
+{% if bp['transmit_interval'] is defined and
+  (bp['transmit_interval'] | int() >= 10 and
+  bp['transmit_interval'] | int() <= 60000) %}
+{{ '  transmit-interval ' ~ bp['transmit_interval'] }}
+{% endif %}
+

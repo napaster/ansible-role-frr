@@ -3,6 +3,10 @@
   (rm['actions'] is defined and rm['actions'] not in ['', [], '[]', None]) %}
 {% for rma in rm['actions'] %}
 {{ 'route-map ' + rm['name'] + ' ' + rma['action'] }}
+{% if rma['description'] is defined and rma['description']
+  not in ['', [], '[]', None] %}
+{{ ' description ' + rma['description'] }}
+{% endif %}
 {% if rma['rules'] is defined and rma['rules'] not in ['', [], '[]', None] %}
 {% for r in rma['rules'] %}
 {{ ' ' + r }}
