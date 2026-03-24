@@ -1,3 +1,7 @@
+{% if n['peer_group'] is defined and n['peer_group']
+  not in ['', [], '[]', None] %}
+{{ ' neighbor ' + n['neighbor'] + ' peer-group ' ~ n['peer_group'] }}
+{% endif %}
 {% if n['remote_as'] is defined and n['remote_as']
   not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' remote-as ' ~ n['remote_as'] }}
@@ -68,10 +72,6 @@
 {% if n['password'] is defined and n['password']
   not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' password ' ~ n['password'] }}
-{% endif %}
-{% if n['peer_group'] is defined and n['peer_group']
-  not in ['', [], '[]', None] %}
-{{ ' neighbor ' + n['neighbor'] + ' peer-group ' ~ n['peer_group'] }}
 {% endif %}
 {% if n['port'] is defined and n['port'] not in ['', [], '[]', None] %}
 {{ ' neighbor ' + n['neighbor'] + ' port ' ~ n['port'] }}
