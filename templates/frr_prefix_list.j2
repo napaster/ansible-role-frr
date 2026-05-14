@@ -1,12 +1,35 @@
+{% macro frr_prefix_rule(prefix, name, seq) -%}
+{% set action = prefix['action'] | default('permit') %}
+{% set destination = prefix['destination'] | default(prefix['prefix'] | default('')) %}
+{% if destination not in ['', [], '[]', None] %}
+{{ 'ip prefix-list ' ~ name ~ ' seq ' ~ seq ~ ' ' ~ action ~ ' ' ~ destination -}}
+{% if prefix['le'] is defined and prefix['le'] not in ['', [], '[]', None] %}
+{{ ' le ' ~ prefix['le'] -}}
+{% elif prefix['ge'] is not defined %}
+{{ ' le 32' -}}
+{% endif %}
+{% if prefix['ge'] is defined and prefix['ge'] not in ['', [], '[]', None] %}
+{{ ' ge ' ~ prefix['ge'] -}}
+{% endif %}
+{% endif %}
+{%- endmacro %}
 {% for p in lookup('ansible.builtin.vars', 'frr_router_prefix_lists') %}
 {% if p['name'] is defined and p['name'] not in ['', [], '[]', None] %}
 {% if p['description'] is defined and p['description']
   not in ['', [], '[]', None] %}
 {{ 'ip prefix-list ' + p['name'] + ' description ' + p['description'] }}
 {% endif %}
+{% set ns = namespace(seq=0) %}
 {% if p['rules'] is defined and p['rules'] not in ['', [], '[]', None] %}
-{% for list in p['rules'] %}
-{{ 'ip prefix-list ' ~ p['name'] ~ ' seq ' ~ (loop['index'] * 5) ~ ' ' ~ list }}
+{% for rule in p['rules'] %}
+{% set ns.seq = ns.seq + 5 %}
+{{ 'ip prefix-list ' ~ p['name'] ~ ' seq ' ~ ns.seq ~ ' ' ~ rule }}
+{% endfor %}
+{% endif %}
+{% if p['prefixes'] is defined and p['prefixes'] not in ['', [], '[]', None] %}
+{% for prefix in p['prefixes'] %}
+{% set ns.seq = ns.seq + 5 %}
+{{ frr_prefix_rule(prefix, p['name'], ns.seq) }}
 {% endfor %}
 {% endif %}
 {% endif %}

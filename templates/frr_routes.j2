@@ -1,28 +1,31 @@
-{% for r in lookup('ansible.builtin.vars', 'frr_routes') %}
-{% if r['destination'] is defined and r['destination']
-  not in ['', [], '[]', None] %}
-{{ 'ip route ' + r['destination'] -}}
-{% if r['next_hop'] is defined and r['next_hop'] not in ['', [], '[]', None] %}
-{{ ' ' ~ r['next_hop'] -}}
-{% endif %}
-{% if r['interface'] is defined and r['interface']
-  not in ['', [], '[]', None] %}
-{{ ' ' ~ r['interface'] -}}
-{% endif %}
-{% if r['tag'] is defined and r['tag'] not in ['', [], '[]', None] %}
-{{ ' tag ' ~ r['tag'] -}}
-{% endif %}
-{% if r['distance'] is defined and (r['distance'] | int() > 1 and
-  r['distance'] | int() <= 255) %}
-{{ ' ' ~ r['distance'] -}}
-{% endif %}
-{% if r['table'] is defined and r['table'] not in ['', [], '[]', None] %}
-{{ ' table ' ~ r['table'] -}}
-{% endif %}
-{% endif %}
-{% if loop['last'] %}
-{{ '\n!' }}
-{% else %}
-{{ '' }}
-{% endif %}
-{% endfor %}
+{%- set routes = [] -%}
+{%- for r in lookup('ansible.builtin.vars', 'frr_routes') -%}
+{%- if r['destination'] is defined and r['destination']
+  not in ['', [], '[]', None] -%}
+{%- set route_tables = r['tables'] if r['tables'] is defined and
+  r['tables'] not in ['', [], '[]', None] else [r['table'] | default(None)] -%}
+{%- for route_table in route_tables -%}
+{%- set route = 'ip route ' ~ r['destination'] -%}
+{%- if r['next_hop'] is defined and r['next_hop'] not in ['', [], '[]', None] -%}
+{%- set route = route ~ ' ' ~ r['next_hop'] -%}
+{%- endif -%}
+{%- if r['interface'] is defined and r['interface']
+  not in ['', [], '[]', None] -%}
+{%- set route = route ~ ' ' ~ r['interface'] -%}
+{%- endif -%}
+{%- if r['tag'] is defined and r['tag'] not in ['', [], '[]', None] -%}
+{%- set route = route ~ ' tag ' ~ r['tag'] -%}
+{%- endif -%}
+{%- if r['distance'] is defined and (r['distance'] | int() > 1 and
+  r['distance'] | int() <= 255) -%}
+{%- set route = route ~ ' ' ~ r['distance'] -%}
+{%- endif -%}
+{%- if route_table is defined and route_table not in ['', [], '[]', None] -%}
+{%- set route = route ~ ' table ' ~ route_table -%}
+{%- endif -%}
+{%- set _ = routes.append(route) -%}
+{%- endfor -%}
+{%- endif -%}
+{%- endfor -%}
+{{ routes | join('\n') }}
+{{ '!\n' }}
