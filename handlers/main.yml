@@ -1,9 +1,26 @@
 ---
-- name: "frr | Reload frr service"
+- name: "frr | Restart frr service"
   ansible.builtin.systemd:
     name: "{{ hostvars[inventory_hostname]['frr_service'] }}"
-    state: "reloaded"
+    state: "restarted"
   listen: "Restart frr"
+  when:
+    - "hostvars[inventory_hostname]['frr'] is defined"
+    - "hostvars[inventory_hostname]['frr'] not in ['', [], '[]', None]"
+    - "hostvars[inventory_hostname]['frr'] |
+       community.general.json_query(lookup('ansible.builtin.vars',
+      'frr_restart', default='')) == 'true'"
+  vars:
+    frr_restart: "[] | map(&restart || 'false', @) | [0]"
+
+- name: "frr | Reload frr configuration"
+  ansible.builtin.command:
+    argv:
+      - "{{ hostvars[inventory_hostname]['frr_reload_command'] }}"
+      - "--reload"
+      - "{{ hostvars[inventory_hostname]['frr_conf_dest'] + '/frr.conf' }}"
+  changed_when: true
+  listen: "Reload frr"
   when:
     - "hostvars[inventory_hostname]['frr'] is defined"
     - "hostvars[inventory_hostname]['frr'] not in ['', [], '[]', None]"

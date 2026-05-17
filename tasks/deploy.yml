@@ -41,7 +41,7 @@
     mode: "0640"
     validate: "vtysh -C -f %s"
   notify:
-    - "Restart frr"
+    - "Reload frr"
 - name: "frr | Enable frr service"
   ansible.builtin.systemd:
     name: "{{ hostvars[inventory_hostname]['frr_service'] }}"
