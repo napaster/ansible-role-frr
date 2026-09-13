@@ -57,6 +57,10 @@
   not in ['', [], '[]', None] %}
 {% include 'frr_bgp_access_lists.j2' %}
 {% endif %}
+{% if lookup('ansible.builtin.vars', 'frr_router_bgp_community_lists', default='')
+  not in ['', [], '[]', None] %}
+{% include 'frr_bgp_community_lists.j2' %}
+{% endif %}
 {% if lookup('ansible.builtin.vars', 'frr_router_route_maps', default='')
   not in ['', [], '[]', None] %}
 {% include 'frr_route_map.j2' %}

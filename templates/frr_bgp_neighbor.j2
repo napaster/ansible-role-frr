@@ -108,3 +108,21 @@
   n['tcp_mss'] | int() <= 65535) %}
 {{ ' neighbor ' + n['neighbor'] + ' tcp-mss ' ~ n['tcp_mss'] }}
 {% endif %}
+{% if n['timers'] is defined and n['timers'] not in ['', [], '[]', None] %}
+{% for nt in n['timers'] %}
+{% if (nt['keepalive'] is defined and (nt['keepalive'] | int() >= 1 and
+  nt['keepalive'] | int() <= 65535)) and (nt['holdtime'] is defined and
+  (nt['holdtime'] | int() >= 1 and nt['holdtime'] | int() <= 65535)) %}
+{{ ' neighbor ' + n['neighbor'] + ' timers ' ~ nt['keepalive'] ~ ' ' ~
+  nt['holdtime'] }}
+{% endif %}
+{% if nt['connect'] is defined and (nt['connect'] | int() >= 1 and
+  nt['connect'] | int() <= 65535) %}
+{{ ' neighbor ' + n['neighbor'] + ' timers connect ' ~ nt['connect'] }}
+{% endif %}
+{% if nt['delayopen'] is defined and (nt['delayopen'] | int() >= 1 and
+  nt['delayopen'] | int() <= 240) %}
+{{ ' neighbor ' + n['neighbor'] + ' timers delayopen ' ~ nt['delayopen'] }}
+{% endif %}
+{% endfor %}
+{% endif %}
