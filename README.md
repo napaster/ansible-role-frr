@@ -467,6 +467,12 @@ frr:
                     passive: 'false'
                     peer_group: 'PEER_GROUP_NAME'
                     sender_as_path_loop_detection: 'true'
+                    # BGP session timers. 'keepalive' and 'holdtime' are
+                    # emitted together as 'neighbor X timers <ka> <hold>'
+                    timers:
+                      - keepalive: '60'
+                        holdtime: '180'
+                        connect: '10'
                   - neighbor: '95.156.85.193'
                     remote_as: '12389'
                     description: 'rostelecom'
@@ -494,6 +500,9 @@ frr:
                       - '193.150.125.0/24'
                     neighbors:
                       - neighbor: '212.17.15.169'
+                        # Only needed when 'bgp default ipv4-unicast' is off
+                        # (datacenter profile); harmless otherwise
+                        activate: 'true'
                         distribute_list:
                           - in: '101'
                         prefix_list:
@@ -502,6 +511,12 @@ frr:
                           - in: 'opentech_avantel_in'
                             out: 'opentech_avantel_out'
                         soft_reconfiguration_inbound: 'true'
+                        # Guard against a peer flooding the table. Without
+                        # 'warning_only' the session is torn down at the limit
+                        maximum_prefix:
+                          - limit: '500000'
+                            threshold: '90'
+                            warning_only: 'true'
                       - neighbor: '95.156.85.193'
                         distribute_list:
                           - in: '101'
@@ -520,6 +535,16 @@ frr:
                           - in: 'opentech_novotelecom_in'
                             out: 'opentech_novotelecom_out'
                         soft_reconfiguration_inbound: 'true'
+                # BGP community lists, referenced from route-maps via
+                # 'match community <name>'. Type: 'standard' or 'expanded'
+                bgp_community_list:
+                  - name: 'ANTIFILTER_WANTED'
+                    type: 'standard'
+                    rules:
+                      - 'permit 65432:100'
+                      - 'permit 65432:200'
+                      - 'permit 65432:400'
+                      - 'permit 65432:500'
                 bgp_as_path_access_list:
                   - name: 'avantel'
                     rules:

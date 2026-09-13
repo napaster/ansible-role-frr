@@ -1,0 +1,14 @@
+{% for c in lookup('ansible.builtin.vars', 'frr_router_bgp_community_lists') %}
+{% if c['name'] is defined and c['name'] not in ['', [], '[]', None] %}
+{% if c['type'] is defined and c['type'] in ['standard', 'expanded'] %}
+{% if c['rules'] is defined and c['rules'] not in ['', [], '[]', None] %}
+{% for rule in c['rules'] %}
+{{ 'bgp community-list ' + c['type'] + ' ' + c['name'] + ' ' + rule }}
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endif %}
+{% if loop['last'] %}
+{{ '!' }}
+{% endif %}
+{% endfor %}

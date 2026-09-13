@@ -14,9 +14,30 @@
 {% for nipv4 in ipv4u['neighbors'] %}
 {% if nipv4['neighbor'] is defined and nipv4['neighbor']
   not in ['', [], '[]', None] %}
+{% if nipv4['activate'] is defined and nipv4['activate'] == 'true' %}
+{{ '  neighbor ' ~ nipv4['neighbor'] ~ ' activate' }}
+{% endif %}
 {% if nipv4['soft_reconfiguration_inbound'] is defined and
  nipv4['soft_reconfiguration_inbound'] == 'true' %}
 {{ '  neighbor ' ~ nipv4['neighbor'] ~ ' soft-reconfiguration inbound' }}
+{% endif %}
+{% if nipv4['maximum_prefix'] is defined and nipv4['maximum_prefix']
+  not in ['', [], '[]', None] %}
+{% for nm in nipv4['maximum_prefix'] %}
+{% if nm['limit'] is defined and (nm['limit'] | int() >= 1 and
+  nm['limit'] | int() <= 4294967295) %}
+{% set mp = '  neighbor ' ~ nipv4['neighbor'] ~ ' maximum-prefix ' ~
+  nm['limit'] %}
+{% if nm['threshold'] is defined and (nm['threshold'] | int() >= 1 and
+  nm['threshold'] | int() <= 100) %}
+{% set mp = mp ~ ' ' ~ nm['threshold'] %}
+{% endif %}
+{% if nm['warning_only'] is defined and nm['warning_only'] == 'true' %}
+{% set mp = mp ~ ' warning-only' %}
+{% endif %}
+{{ mp }}
+{% endif %}
+{% endfor %}
 {% endif %}
 {% if nipv4['distribute_list'] is defined and nipv4['distribute_list']
   not in ['', [], '[]', None] %}

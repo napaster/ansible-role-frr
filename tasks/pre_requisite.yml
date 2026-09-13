@@ -43,6 +43,8 @@
       community.general.json_query('[].settings[].router[].bgp[]') }}"
     frr_router_bgp_access_lists: "{{ lookup('ansible.builtin.vars', 'frr') |
       community.general.json_query('[].settings[].router[].bgp_as_path_access_list[]') }}"
+    frr_router_bgp_community_lists: "{{ lookup('ansible.builtin.vars', 'frr') |
+      community.general.json_query('[].settings[].router[].bgp_community_list[]') }}"
     frr_router_route_maps: "{{ lookup('ansible.builtin.vars', 'frr') |
       community.general.json_query('[].settings[].router[].route_map[]') }}"
     frr_router_access_lists: "{{ lookup('ansible.builtin.vars', 'frr') |
